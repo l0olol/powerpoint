@@ -460,7 +460,7 @@
             input.addEventListener('input', updateTotalPrice);
         });
 
-        // Handle form submission
+      // Handle form submission
         document.getElementById('orderForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
@@ -469,7 +469,7 @@
             
             // Disable submit button
             submitBtn.disabled = true;
-            submitBtn.textContent = 'Wird gesendet...';
+            submitBtn.textContent = 'Wird gespeichert...';
             
             // Collect form data
             const formData = {
@@ -483,18 +483,14 @@
             };
             
             try {
-                // Simulate saving to info.txt file
+                // Create info.txt content
                 const infoData = `${formData.timestamp} | ${formData.name} | ${formData.email} | ${formData.slides} Folien | Qualität ${formData.quality} | ${formData.totalPrice}€ | ${formData.description}\n`;
                 
-                console.log('Neue Info für info.txt:', infoData);
-                console.log('Vollständige Bestelldaten:', formData);
+                // Save to info.txt file
+                await saveToInfoFile(infoData, formData);
                 
-                // Simulate delay for better UX
-                await new Promise(resolve => setTimeout(resolve, 1500));
-                
-                // In real implementation, this would write to info.txt
                 status.className = 'status success';
-                status.textContent = '✅ Bestellung erfolgreich eingereicht!';
+                status.textContent = '✅ Bestellung erfolgreich gespeichert! Die info.txt Datei wurde heruntergeladen.';
                 status.style.display = 'block';
                 
                 // Reset form
@@ -516,30 +512,3 @@
             submitBtn.disabled = false;
             submitBtn.textContent = 'Bestellung absenden';
         });
-
-        // Function to save to info.txt (simplified approach)
-        async function saveToInfoFile(data) {
-            // In a real implementation, this would append to info.txt
-            // Format: timestamp | name | email | slides | quality | price | description
-            const line = `${data.timestamp} | ${data.name} | ${data.email} | ${data.slides} Folien | Qualität ${data.quality} | ${data.totalPrice}€ | ${data.description}\n`;
-            
-            // This would typically use a backend service or file API
-            console.log('Saving to info.txt:', line);
-            
-            // For demonstration, we're just logging
-            // In production, you'd need a backend to handle file operations
-            return Promise.resolve();
-        }
-
-        // Initial price update
-        updateTotalPrice();
-
-        // Add subtle parallax effect
-        window.addEventListener('scroll', () => {
-            const scrolled = window.pageYOffset;
-            const background = document.body;
-            background.style.transform = `translateY(${scrolled * 0.1}px)`;
-        });
-    </script>
-</body>
-</html>
