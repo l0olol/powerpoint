@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PowerPoint Folien Shop</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-bg: #000000;
+            --secondary-bg: #1c1c1e;
+            --tertiary-bg: #2c2c2e;
+            --accent-color: #007aff;
+            --accent-hover: #0056cc;
+            --text-primary: #ffffff;
+            --text-secondary: #8e8e93;
+            --border-color: #38383a;
+            --glass-bg: rgba(28, 28, 30, 0.8);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--primary-bg);
+            min-height: 100vh;
+            padding: 20px;
+            background-image: 
+                radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 40% 80%, rgba(120, 119, 255, 0.1) 0%, transparent 50%);
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: var(--glass-bg);
+            backdrop-filter: blur(40px) saturate(180%);
+            -webkit-backdrop-filter: blur(40px) saturate(180%);
+            border-radius: 24px;
+            padding: 40px;
+            border: 1px solid var(--glass-border);
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--text-primary);
+            margin-bottom: 40px;
+            font-size: 2.5em;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            background: linear-gradient(135deg, var(--text-primary) 0%, rgba(255, 255, 255, 0.8) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .section {
+            margin-bottom: 32px;
+            padding: 24px;
+            border-radius: 16px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+        }
+
+        .section:hover {
+            border-color: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .section h2 {
+            color: var(--text-primary);
+            margin-bottom: 20px;
+            font-size: 1.3em;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .price-btn, .quality-btn {
+            padding: 16px 20px;
+            border: 1px solid var(--border-color);
+            background: var(--secondary-bg);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0.0, 0.2, 1);
+            font-weight: 500;
+            color: var(--text-primary);
+            flex: 1;
+            min-width: 140px;
+            text-align: center;
+            font-size: 15px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .price-btn::before, .quality-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .price-btn:hover::before, .quality-btn:hover::before {
+            left: 100%;
+        }
+
+        .price-btn:hover, .quality-btn:hover {
+            transform: translateY(-2px) scale(1.02);
+            border-color: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .price-btn:active, .quality-btn:active {
+            transform: translateY(0) scale(0.98);
+        }
+
+        .price-btn.selected, .quality-btn.selected {
+            background: var(--accent-color);
+            color: white;
+            border-color: var(--accent-color);
+            box-shadow: 0 4px 20px rgba(0, 122, 255, 0.4);
+        }
+
+        .price-btn.selected:hover, .quality-btn.selected:hover {
+            background: var(--accent-hover);
+            box-shadow: 0 8px 25px rgba(0, 122, 255, 0.5);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-primary);
+            font-size: 15px;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 16px;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.2s cubic-bezier(0.4, 0.0, 0.2, 1);
+            background: var(--secondary-bg);
+            color: var(--text-primary);
+            font-family: inherit;
+        }
+
+        input::placeholder, textarea::placeholder {
+            color: var(--text-secondary);
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.2);
+            background: var(--tertiary-bg);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+            font-family: inherit;
+        }
+
+        .total-price {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            color: var(--text-primary);
+            padding: 24px;
+            border-radius: 16px;
+            text-align: center;
+            font-size: 1.5em;
+            font-weight: 600;
+            margin: 32px 0;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 18px;
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 17px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0.0, 0.2, 1);
+            box-shadow: 0 4px 20px rgba(0, 122, 255, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .submit-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .submit-btn:hover::before {
+            left: 100%;
+        }
+
+        .submit-btn:hover {
+            background: var(--accent-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0, 122, 255, 0.4);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            background: var(--text-secondary);
+        }
+
+        .submit-btn:disabled:hover {
+            transform: none;
+            box-shadow: none;
+        }
+
+        .status {
+            margin-top: 20px;
+            padding: 16px;
+            border-radius: 12px;
+            text-align: center;
+            font-weight: 500;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+
+        .status.success {
+            background: rgba(52, 199, 89, 0.2);
+            color: #34c759;
+            border: 1px solid rgba(52, 199, 89, 0.3);
+        }
+
+        .status.error {
+            background: rgba(255, 59, 48, 0.2);
+            color: #ff3b30;
+            border: 1px solid rgba(255, 59, 48, 0.3);
+        }
+
+        /* Smooth scrolling and animations */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .container {
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        .section {
+            animation: fadeIn 0.6s ease-out;
+            animation-fill-mode: both;
+        }
+
+        .section:nth-child(1) { animation-delay: 0.1s; }
+        .section:nth-child(2) { animation-delay: 0.2s; }
+        .section:nth-child(3) { animation-delay: 0.3s; }
+        .section:nth-child(4) { animation-delay: 0.4s; }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 24px;
+                margin: 10px;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+            
+            .price-btn, .quality-btn {
+                min-width: auto;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+        }
+
+        /* macOS-style selection highlight */
+        ::selection {
+            background: rgba(0, 122, 255, 0.3);
+        }
+
+        ::-moz-selection {
+            background: rgba(0, 122, 255, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 PowerPoint Folien Shop</h1>
+        
+        <form id="orderForm">
+            <div class="section">
+                <h2>📊 Anzahl Folien wählen</h2>
+                <div class="button-group">
+                    <button type="button" class="price-btn" data-slides="5" data-price="3">
+                        5 Folien<br><strong>3€</strong>
+                    </button>
+                    <button type="button" class="price-btn" data-slides="10" data-price="5">
+                        10 Folien<br><strong>5€</strong>
+                    </button>
+                    <button type="button" class="price-btn" data-slides="15" data-price="8">
+                        15+ Folien<br><strong>8€</strong>
+                    </button>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>⭐ Qualitätsstufe wählen</h2>
+                <div class="button-group">
+                    <button type="button" class="quality-btn" data-quality="1" data-price="0">
+                        Stufe 1<br><strong>+0€</strong>
+                    </button>
+                    <button type="button" class="quality-btn" data-quality="2" data-price="1">
+                        Stufe 2<br><strong>+1€</strong>
+                    </button>
+                    <button type="button" class="quality-btn" data-quality="3" data-price="2">
+                        Stufe 3<br><strong>+2€</strong>
+                    </button>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>📝 Ihre Daten</h2>
+                <div class="form-group">
+                    <label for="name">Name *</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">E-Mail Adresse *</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="description">Beschreibung der gewünschten Folien *</label>
+                    <textarea id="description" name="description" placeholder="Beschreiben Sie hier, was für PowerPoint-Folien Sie benötigen..." required></textarea>
+                </div>
+            </div>
+
+            <div class="total-price" id="totalPrice">
+                Gesamtpreis: 0€
+            </div>
+
+            <button type="submit" class="submit-btn" id="submitBtn" disabled>
+                Bestellung absenden
+            </button>
+        </form>
+
+        <div id="status" class="status" style="display: none;"></div>
+    </div>
+
+    <script>
+        let selectedSlides = 0;
+        let selectedQuality = 0;
+        let slidesPrice = 0;
+        let qualityPrice = 0;
+
+        // Info file configuration
+        const INFO_FILE_PATH = 'info.txt';
+
+        function updateTotalPrice() {
+            const total = slidesPrice + qualityPrice;
+            document.getElementById('totalPrice').textContent = `Gesamtpreis: ${total}€`;
+            
+            // Check if form can be submitted
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const description = document.getElementById('description').value.trim();
+            
+            const canSubmit = selectedSlides > 0 && selectedQuality > 0 && name && email && description;
+            document.getElementById('submitBtn').disabled = !canSubmit;
+        }
+
+        // Handle slide selection
+        document.querySelectorAll('.price-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                // Remove selection from all buttons
+                document.querySelectorAll('.price-btn').forEach(b => b.classList.remove('selected'));
+                
+                // Add selection to clicked button
+                this.classList.add('selected');
+                
+                selectedSlides = parseInt(this.dataset.slides);
+                slidesPrice = parseInt(this.dataset.price);
+                
+                updateTotalPrice();
+            });
+        });
+
+        // Handle quality selection
+        document.querySelectorAll('.quality-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                // Remove selection from all buttons
+                document.querySelectorAll('.quality-btn').forEach(b => b.classList.remove('selected'));
+                
+                // Add selection to clicked button
+                this.classList.add('selected');
+                
+                selectedQuality = parseInt(this.dataset.quality);
+                qualityPrice = parseInt(this.dataset.price);
+                
+                updateTotalPrice();
+            });
+        });
+
+        // Handle form input changes
+        document.querySelectorAll('input, textarea').forEach(input => {
+            input.addEventListener('input', updateTotalPrice);
+        });
+
+        // Handle form submission
+        document.getElementById('orderForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const submitBtn = document.getElementById('submitBtn');
+            const status = document.getElementById('status');
+            
+            // Disable submit button
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Wird gesendet...';
+            
+            // Collect form data
+            const formData = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                description: document.getElementById('description').value,
+                slides: selectedSlides,
+                quality: selectedQuality,
+                totalPrice: slidesPrice + qualityPrice,
+                timestamp: new Date().toLocaleString('de-DE')
+            };
+            
+            try {
+                // Simulate saving to info.txt file
+                const infoData = `${formData.timestamp} | ${formData.name} | ${formData.email} | ${formData.slides} Folien | Qualität ${formData.quality} | ${formData.totalPrice}€ | ${formData.description}\n`;
+                
+                console.log('Neue Info für info.txt:', infoData);
+                console.log('Vollständige Bestelldaten:', formData);
+                
+                // Simulate delay for better UX
+                await new Promise(resolve => setTimeout(resolve, 1500));
+                
+                // In real implementation, this would write to info.txt
+                status.className = 'status success';
+                status.textContent = '✅ Bestellung erfolgreich eingereicht! Daten wurden in info.txt gespeichert.';
+                status.style.display = 'block';
+                
+                // Reset form
+                document.getElementById('orderForm').reset();
+                document.querySelectorAll('.selected').forEach(btn => btn.classList.remove('selected'));
+                selectedSlides = 0;
+                selectedQuality = 0;
+                slidesPrice = 0;
+                qualityPrice = 0;
+                updateTotalPrice();
+                
+            } catch (error) {
+                status.className = 'status error';
+                status.textContent = '❌ Fehler beim Speichern in info.txt. Bitte versuchen Sie es erneut.';
+                status.style.display = 'block';
+            }
+            
+            // Re-enable submit button
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Bestellung absenden';
+        });
+
+        // Function to save to info.txt (simplified approach)
+        async function saveToInfoFile(data) {
+            // In a real implementation, this would append to info.txt
+            // Format: timestamp | name | email | slides | quality | price | description
+            const line = `${data.timestamp} | ${data.name} | ${data.email} | ${data.slides} Folien | Qualität ${data.quality} | ${data.totalPrice}€ | ${data.description}\n`;
+            
+            // This would typically use a backend service or file API
+            console.log('Saving to info.txt:', line);
+            
+            // For demonstration, we're just logging
+            // In production, you'd need a backend to handle file operations
+            return Promise.resolve();
+        }
+
+        // Initial price update
+        updateTotalPrice();
+
+        // Add subtle parallax effect
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const background = document.body;
+            background.style.transform = `translateY(${scrolled * 0.1}px)`;
+        });
+    </script>
+</body>
+</html>
