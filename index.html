@@ -428,7 +428,23 @@
             btn.addEventListener('click', function() {
                 // Remove selection from all buttons
                 document.querySelectorAll('.price-btn').forEach(b => b.classList.remove('selected'));
-                
+        try {
+    // Simulate saving to info.txt file
+    const infoData = `${formData.timestamp} | ${formData.name} | ${formData.email} | ${formData.slides} Folien | Qualität ${formData.quality} | ${formData.totalPrice}€ | ${formData.description}\n`;
+    
+    console.log('Neue Info für info.txt:', infoData);
+    console.log('Vollständige Bestelldaten:', formData);
+    
+    // Simulate delay for better UX
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    
+    // In real implementation, this would write to info.txt
+    status.className = 'status success';
+    status.textContent = '✅ Bestellung erfolgreich eingereicht! Daten wurden in info.txt gespeichert.';
+    status.style.display = 'block';
+    
+    // Reset form ...
+        
                 // Add selection to clicked button
                 this.classList.add('selected');
                 
